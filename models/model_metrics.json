@@ -1,0 +1,23 @@
+{
+    "classifier_name": "Random Forest Classifier",
+    "accuracy": 0.8675,
+    "regressor_name": "Gradient Boosting Regressor",
+    "r2_score": 0.7677,
+    "mean_absolute_error": 0.067,
+    "total_samples": 2000,
+    "features": [
+        "attendance_pct",
+        "campus_club_member",
+        "academic_score",
+        "days_registered_before_election",
+        "has_candidate_from_dept",
+        "past_election_voted",
+        "role_Student",
+        "dept_Civil Engineering",
+        "dept_Computer Engineering",
+        "dept_Electronics",
+        "dept_Information Technology",
+        "dept_Mechanical Engineering"
+    ],
+    "turnout_overall_rate": 82.7
+}
