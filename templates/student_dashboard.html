@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard (Figure 5.1){% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <h2 class="fw-bold text-primary mb-1">Student Dashboard</h2>
+        <p class="text-muted mb-0">
+            Welcome, <strong>{{ user.name }}</strong> (UID: <code>{{ user.identifier }}</code> • {{ user.department }} • {{ user.year }})
+        </p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6">
+            <i class="bi bi-patch-check-fill"></i> Verified Eligible Voter
+        </span>
+    </div>
+</div>
+
+<!-- Figure 5.1: Top Metric Summary Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="stat-card border-start border-4 border-primary">
+            <div class="stat-value text-primary">{{ stats.active_elections }}</div>
+            <div class="stat-label">Active Elections</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card border-start border-4 border-warning">
+            <div class="stat-value text-warning">{{ stats.upcoming_elections }}</div>
+            <div class="stat-label">Upcoming Polls</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card border-start border-4 border-success">
+            <div class="stat-value text-success">{{ stats.votes_cast }}</div>
+            <div class="stat-label">Votes Cast by You</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card border-start border-4 border-info">
+            <div class="stat-value text-info">{{ stats.published_results }}</div>
+            <div class="stat-label">Published Results</div>
+        </div>
+    </div>
+</div>
+
+<!-- Figure 5.1: Available Elections Table -->
+<div class="card border-0 shadow-sm rounded-3 mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-card-checklist text-primary me-2"></i> Campus Student Elections</h5>
+        <span class="badge bg-light text-muted border">Live Database Roll</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Election Title</th>
+                        <th>Target Group</th>
+                        <th>Scheduled Closing</th>
+                        <th>Status</th>
+                        <th>Your Participation</th>
+                        <th class="text-end pe-4">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for elec in elections %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold text-dark">{{ elec.title }}</div>
+                            <small class="text-muted">{{ elec.description }}</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary-subtle text-secondary">{{ elec.target_role.upper() }}</span>
+                        </td>
+                        <td>
+                            <div class="small fw-semibold">{{ elec.end_time }}</div>
+                        </td>
+                        <td>
+                            {% if elec.status == 'Open' %}
+                                <span class="badge-status status-open"><i class="bi bi-record-fill text-danger me-1"></i> Open for Voting</span>
+                            {% elif elec.status == 'Scheduled' %}
+                                <span class="badge-status status-scheduled">Scheduled</span>
+                            {% elif elec.status == 'Published' %}
+                                <span class="badge-status status-published">Results Published</span>
+                            {% else %}
+                                <span class="badge-status status-closed">Closed</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if elec.has_voted %}
+                                <span class="badge bg-success text-white py-1 px-2">
+                                    <i class="bi bi-check-circle-fill"></i> Voted
+                                </span>
+                                <div class="small text-muted mt-1" style="font-size: 0.75rem;">
+                                    <code>{{ elec.receipt_code }}</code>
+                                </div>
+                            {% else %}
+                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+                                    Not Voted Yet
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
+                            {% if elec.status == 'Open' %}
+                                {% if elec.has_voted %}
+                                    <a href="{{ url_for('view_receipt', receipt_code=elec.receipt_code) }}" class="btn btn-outline-success btn-sm fw-semibold">
+                                        <i class="bi bi-receipt"></i> View Certificate
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('ballot_screen', election_id=elec.id) }}" class="btn btn-primary btn-sm fw-bold px-3 shadow-sm">
+                                        <i class="bi bi-box-seam"></i> Cast Ballot
+                                    </a>
+                                {% endif %}
+                            {% elif elec.status == 'Published' %}
+                                <a href="{{ url_for('published_results') }}" class="btn btn-outline-info btn-sm fw-semibold">
+                                    <i class="bi bi-bar-chart-fill"></i> View Tally
+                                </a>
+                            {% else %}
+                                <button class="btn btn-light btn-sm text-muted" disabled>Polling Closed</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Voter Certificate Quick View if voted -->
+{% if user_receipts %}
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="card-header bg-white py-3">
+        <h6 class="mb-0 fw-bold text-success"><i class="bi bi-award-fill me-2"></i> Your Voting Certificates & Verification Tokens</h6>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            {% for r in user_receipts %}
+            <div class="col-md-6">
+                <div class="receipt-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-success text-white">Participation Verified</span>
+                        <small class="text-muted">{{ r.voted_at }}</small>
+                    </div>
+                    <div class="fw-bold fs-5 text-dark">{{ r.title }}</div>
+                    <div class="my-2">
+                        Token: <code>{{ r.receipt_code }}</code>
+                    </div>
+                    <a href="{{ url_for('view_receipt', receipt_code=r.receipt_code) }}" class="btn btn-success btn-sm mt-2">
+                        <i class="bi bi-download"></i> Download / Print Certificate
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

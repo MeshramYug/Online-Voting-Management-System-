@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Voter Verification Certificate - {{ receipt.receipt_code }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden my-4" id="certificateArea">
+            <!-- Header with College Emblem -->
+            <div class="p-4 text-center text-white" style="background: linear-gradient(135deg, #0F2B66 0%, #1E3A8A 100%);">
+                <div class="fs-1 mb-2">🏛️</div>
+                <h4 class="fw-bold mb-1">ST. VINCENT PALLOTTI COLLEGE OF ENGINEERING & TECHNOLOGY, NAGPUR</h4>
+                <p class="small opacity-75 mb-0">DEPARTMENT OF ARTIFICIAL INTELLIGENCE • CAMPUS ELECTION COMMISSION</p>
+                <div class="badge bg-warning text-dark px-3 py-2 mt-3 fw-bold">
+                    OFFICIAL VOTER PARTICIPATION CERTIFICATE
+                </div>
+            </div>
+
+            <!-- Certificate Body -->
+            <div class="card-body p-4 p-md-5 bg-white">
+                <div class="text-center mb-4">
+                    <div class="text-muted small text-uppercase fw-bold letter-spacing-1">This is to certify that</div>
+                    <h2 class="fw-bold text-primary mt-1 mb-0">{{ user.name }}</h2>
+                    <p class="text-secondary fw-semibold">
+                        College UID: <code>{{ user.identifier }}</code> • {{ user.department }} ({{ user.year }})
+                    </p>
+                </div>
+
+                <div class="p-3 bg-light rounded-3 mb-4 border">
+                    <p class="text-center mb-0 small text-dark">
+                        has successfully and democratically exercised their voting franchise in the official student election:
+                    </p>
+                    <h5 class="text-center fw-bold text-dark mt-2 mb-0">{{ election.title }}</h5>
+                </div>
+
+                <div class="row g-3 text-center mb-4">
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-white">
+                            <div class="small text-muted fw-bold text-uppercase">Cryptographic Receipt Code</div>
+                            <div class="fs-5 fw-bold text-success font-monospace mt-1">
+                                {{ receipt.receipt_code }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-white">
+                            <div class="small text-muted fw-bold text-uppercase">Certified Timestamp</div>
+                            <div class="fs-6 fw-bold text-dark mt-1">
+                                {{ receipt.voted_at }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secret Ballot Proof Guarantee -->
+                <div class="alert alert-success d-flex align-items-center gap-3 p-3 mb-0">
+                    <div class="fs-3"><i class="bi bi-shield-check"></i></div>
+                    <div class="small">
+                        <strong>Secret Ballot Guarantee (Chapter 4.4):</strong> In accordance with college election governance, your ballot choices are decoupled and stored anonymously. This certificate proves voter participation without revealing any candidate selections.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificate Footer with Verification Signatures -->
+            <div class="card-footer bg-light p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="small text-muted">
+                    Verification Authority: <strong>Dr. Vikas Bhowate</strong><br>
+                    Status: <span class="badge bg-success">Authenticated & Sealed</span>
+                </div>
+                <div class="d-flex gap-2 no-print">
+                    <a href="{{ url_for('student_dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-left"></i> Back to Dashboard
+                    </a>
+                    <button onclick="window.print()" class="btn btn-primary btn-sm fw-bold">
+                        <i class="bi bi-printer-fill"></i> Print / Save PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    @media print {
+        header, nav, footer, .no-print {
+            display: none !important;
+        }
+        body {
+            background: white !important;
+        }
+        #certificateArea {
+            box-shadow: none !important;
+            border: 2px solid #000 !important;
+        }
+    }
+</style>
+{% endblock %}

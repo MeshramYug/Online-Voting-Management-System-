@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}SEPM QA Test Suite (Chapter 9){% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <h2 class="fw-bold text-primary mb-1">SEPM Quality Assurance & Testing Suite</h2>
+        <p class="text-muted mb-0">Interactive Automated Verification of Chapter 9 Test Cases (TC-01 through TC-09) • SVPCET</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="{{ url_for('run_all_tests') }}" class="btn btn-success btn-sm fw-bold shadow-sm">
+            <i class="bi bi-play-fill"></i> Execute All 9 Test Cases Live
+        </a>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-check2-square text-success me-2"></i> Planned Test Cases Table (Chapter 9.1)</h5>
+        <span class="badge bg-success text-white">Automated Test Harness Ready</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Test ID</th>
+                        <th>Scenario & Input Description</th>
+                        <th>Expected Result (from Report)</th>
+                        <th>System Execution Result</th>
+                        <th class="text-end pe-4">Verification Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tc in test_results %}
+                    <tr>
+                        <td class="ps-4">
+                            <span class="badge bg-primary-subtle text-primary fw-bold font-monospace">{{ tc.id }}</span>
+                        </td>
+                        <td>
+                            <strong>{{ tc.name }}</strong>
+                            <div class="small text-muted">{{ tc.input }}</div>
+                        </td>
+                        <td><small class="text-dark">{{ tc.expected }}</small></td>
+                        <td>
+                            <small class="fw-semibold {% if tc.passed %}text-success{% else %}text-danger{% endif %}">
+                                {{ tc.actual }}
+                            </small>
+                        </td>
+                        <td class="text-end pe-4">
+                            {% if tc.passed %}
+                                <span class="badge bg-success text-white px-3 py-2">
+                                    <i class="bi bi-check-circle-fill"></i> PASSED
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark px-3 py-2">
+                                    <i class="bi bi-clock"></i> PLANNED
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer bg-light p-3">
+        <small class="text-muted">
+            <i class="bi bi-info-circle me-1"></i> These test cases directly evaluate functional specifications, security constraints, duplicate-vote prevention, and mathematical ballot secrecy as detailed in Chapter 9 of the SEPM Project Report.
+        </small>
+    </div>
+</div>
+{% endblock %}

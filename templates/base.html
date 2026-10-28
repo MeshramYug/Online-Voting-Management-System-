@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Online Voting System for Students{% endblock %} | SVPCET Nagpur</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1E3A8A;
+            --accent-blue: #3B82F6;
+            --light-bg: #F8FAFC;
+            --card-border: #E2E8F0;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* College Header Banner */
+        .college-header {
+            background: linear-gradient(135deg, #0f2b66 0%, #1e3a8a 50%, #2563eb 100%);
+            color: white;
+            padding: 12px 0;
+            box-shadow: 0 4px 15px rgba(15, 43, 102, 0.15);
+        }
+
+        .college-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            margin: 0;
+        }
+
+        .college-sub {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            margin: 0;
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: white;
+            border-bottom: 1px solid var(--card-border);
+            padding: 10px 0;
+        }
+
+        .nav-link {
+            font-weight: 600;
+            color: #334155 !important;
+            padding: 6px 14px !important;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-blue) !important;
+            background: rgba(59, 130, 246, 0.08);
+        }
+
+        /* Cards & Metric Boxes */
+        .stat-card {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        .stat-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Candidate Card */
+        .candidate-card {
+            background: white;
+            border: 2px solid var(--card-border);
+            border-radius: 14px;
+            padding: 18px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            height: 100%;
+        }
+
+        .candidate-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
+        }
+
+        .candidate-card.selected {
+            border-color: #2563EB;
+            background-color: #EFF6FF;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Status Badges */
+        .badge-status {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            letter-spacing: 0.04em;
+        }
+        .status-open { background: #DCFCE7; color: #166534; }
+        .status-scheduled { background: #FEF3C7; color: #92400E; }
+        .status-closed { background: #F1F5F9; color: #475569; }
+        .status-published { background: #DBEAFE; color: #1E40AF; }
+
+        /* Receipt Box */
+        .receipt-card {
+            background: #F0FDF4;
+            border: 2px dashed #16A34A;
+            border-radius: 12px;
+            padding: 24px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        footer {
+            margin-top: auto;
+            background: white;
+            border-top: 1px solid var(--card-border);
+            padding: 16px 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Institutional Banner -->
+    <header class="college-header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <div style="font-size: 2.2rem;">🏛️</div>
+                <div>
+                    <h1 class="college-title">ST. VINCENT PALLOTTI COLLEGE OF ENGINEERING & TECHNOLOGY, NAGPUR</h1>
+                    <p class="college-sub">Department of Artificial Intelligence • Software Engineering and Project Management (SEPM) Mini Project</p>
+                </div>
+            </div>
+            <div class="text-end d-none d-md-block">
+                <span class="badge bg-light text-primary px-3 py-2 fw-bold" style="font-size: 0.8rem;">
+                    UID: 24001027 • Yug Meshram
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary d-flex align-items-center gap-2" href="{{ url_for('index') }}">
+                <span>🗳️</span> CampusVote <span class="badge bg-primary-subtle text-primary border border-primary-subtle fs-6" style="font-size: 0.7rem !important;">SEPM Prototype</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    {% if session.get('user') %}
+                        {% if session['user']['role'] == 'student' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('student_dashboard') }}"><i class="bi bi-speedometer2"></i> Student Dashboard</a></li>
+                        {% elif session['user']['role'] == 'admin' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_console') }}"><i class="bi bi-shield-check"></i> Admin Console</a></li>
+                        {% elif session['user']['role'] == 'candidate' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('candidate_portal') }}"><i class="bi bi-person-badge"></i> Candidate Panel</a></li>
+                        {% elif session['user']['role'] == 'auditor' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('auditor_console') }}"><i class="bi bi-journal-check"></i> Auditor Panel</a></li>
+                        {% endif %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('published_results') }}"><i class="bi bi-bar-chart"></i> Election Results</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('test_suite') }}"><i class="bi bi-clipboard-check"></i> QA Test Suite (TC-01..09)</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}"><i class="bi bi-house"></i> Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('published_results') }}"><i class="bi bi-bar-chart"></i> Results</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('test_suite') }}"><i class="bi bi-clipboard-check"></i> SEPM Test Cases</a></li>
+                    {% endif %}
+                </ul>
+
+                <div class="d-flex align-items-center gap-2">
+                    {% if session.get('user') %}
+                        <span class="text-muted small me-2">
+                            Signed in as: <strong>{{ session['user']['name'] }}</strong> (<code>{{ session['user']['role'].upper() }}</code>)
+                        </span>
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login_portal') }}" class="btn btn-primary btn-sm px-3"><i class="bi bi-lock-fill"></i> Select Login Portal</a>
+                        <a href="{{ url_for('register_portal') }}" class="btn btn-outline-primary btn-sm px-3">Student Registration</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show shadow-sm" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content Block -->
+    <main class="container my-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <strong>Online Voting System for Students</strong> • SEPM Mini Project Practical No. 9
+            </div>
+            <div>
+                Student Name: <strong>Yug Meshram</strong> (UID: <code>24001027</code>) • Under guidance of <strong>Dr. Vikas Bhowate</strong>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

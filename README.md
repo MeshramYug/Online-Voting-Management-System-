@@ -1,13 +1,18 @@
-# 🗳️ CampusVote: Online Voting Management System
+# 🗳️ Online Voting System for Students (SEPM Mini Project)
 
-[![Made with Python](https://img.shields.io/badge/Made%20with-Python%203.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
-[![Scikit-Learn](https://img.shields.io/badge/ML-Scikit--Learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
-[![Plotly](https://img.shields.io/badge/Analytics-Plotly-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)](https://plotly.com)
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Flask](https://img.shields.io/badge/Backend-Flask%203.1-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![SQLite](https://img.shields.io/badge/Database-SQLite3-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://sqlite.org)
+[![Bootstrap 5](https://img.shields.io/badge/Frontend-Bootstrap%205-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com)
 [![Developed With AI](https://img.shields.io/badge/🤖%20Developed%20With-AI%20Assistance-8A2BE2?style=for-the-badge)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-> 🤖 **AI Disclosure**: This project and its machine learning architectures were crafted and accelerated **using Artificial Intelligence (AI)** assistance!
+> 🏛️ **Academic Institution**: St. Vincent Pallotti College of Engineering & Technology, Nagpur  
+> 🎓 **Department**: Department of Artificial Intelligence  
+> 📑 **Subject**: Software Engineering and Project Management (SEPM) • Practical No. 9  
+> 👤 **Submitted By**: **Yug Meshram** (College UID: `24001027`, Sem V)  
+> 👨‍🏫 **Guided By**: **Dr. Vikas Bhowate**  
+> 🤖 **AI Disclosure**: This project and its architectures were designed and developed with **Artificial Intelligence (AI)** assistance!
 
 ---
 
@@ -27,126 +32,85 @@ Because democracy is serious business, but elections don't have to be boring:
 
 ---
 
-## 📌 Project Overview
+## 🚀 How to Run Locally (NO Streamlit Cloud Deployment Needed!)
 
-**CampusVote** is a production-ready, digital voting management system designed for academic institutions, student councils, and faculty senates. It combines:
-1. **Multi-Role Isolation**: Dedicated login tabs tailored for **Students**, **Faculty Members**, and **Election Administrators**.
-2. **Tamper-Resistant Secret Ballot Architecture**: Cryptographic decoupling ensures complete voter anonymity while mathematically preventing duplicate votes.
-3. **Cryptographic Voting Receipts**: Every voter receives a verifiable token code (`VOTE-REC-XXXXXXXX`) as proof of participation.
-4. **AI-Powered Turnout Forecaster**: Built-in machine learning models predicting turnout likelihood to help election commissioners maximize participation.
+You do **not** need to deploy to Streamlit Cloud or configure remote servers. You can run the entire system directly on your PC:
 
----
+### ⚡ Method A: 1-Click Double Click (Recommended)
+Simply double-click the **`run_voting_system.bat`** file in this folder (or in the project root).
+- It verifies the SQLite database.
+- It automatically launches your default browser to **`http://127.0.0.1:5000`**.
+- It starts the local Flask server immediately!
 
-## ✨ Dedicated Login Tabs & Portals
-
-The application features dedicated, independent tabs for each stakeholder on the login screen:
-
-```
-                            ┌───────────────────────────────────┐
-                            │    CampusVote Main Entrypoint     │
-                            └─────────────────┬─────────────────┘
-                                              │
-         ┌─────────────────────────┬──────────┴──────────────┬─────────────────────────┐
-         ▼                         ▼                         ▼                         ▼
-┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
-│ 🎓 Student Tab   │       │ 🏛️ Faculty Tab   │       │ 🛡️ Admin Tab     │       │ 📝 Register Tab │
-├─────────────────┤       ├─────────────────┤       ├─────────────────┤       ├─────────────────┤
-│ • Roll Number   │       │ • Faculty ID    │       │ • Admin User    │       │ • New Student / │
-│ • Secret Ballot │       │ • Senate Vote   │       │ • Turnout AI    │       │   Faculty Setup │
-│ • Live Results  │       │ • Ledger Proof  │       │ • Election DDL  │       │ • Department    │
-└─────────────────┘       └─────────────────┘       └─────────────────┘       └─────────────────┘
-```
-
-- **🎓 Student Portal**: Confidential ballot casting, candidate manifestos, downloadable participation certificate, live student council results.
-- **🏛️ Faculty Senate Portal**: Faculty-specific elections, senate representative voting, official academic ledger receipt.
-- **🛡️ Admin Console**: Complete election lifecycle management, candidate/position creation, live Plotly analytics, CSV audit export, and ML turnout forecaster.
-- **📝 New Voter Registration**: Instant onboarding for eligible campus members.
-
----
-
-## 🔒 Security & Secret Ballot Guarantee
-
-- **Strict Anonymity**: The `votes` table stores **only** `election_id`, `position_id`, `candidate_id`, and a random cryptographic `ballot_token`. It **never** stores the voter's identity with their vote.
-- **Duplicate Vote Prevention**: The `voter_records` table logs `user_id` and `election_id` with a database-level `UNIQUE` constraint. This verifies participation without disclosing choice.
-- **Verifiable Receipt Token**: Voters receive an encrypted receipt code (`VOTE-REC-XXXXXXXX`) to verify their ballot was counted.
-
----
-
-## 🧠 Machine Learning Models: Voter Turnout Prediction
-
-Trained on 2,000 campus demographic and engagement observations:
-
-| Model | Architecture | Objective | Metric |
-| :--- | :--- | :--- | :---: |
-| **Voter Turnout Classifier** | Random Forest Classifier | Classifies whether a voter will turn out to vote | **86.75% Accuracy** |
-| **Turnout Regressor** | Gradient Boosting Regressor | Predicts percentage probability of turnout | **$R^2 = 0.768$** |
-
-### Key Predictive Features:
-- Campus attendance percentage
-- Society / Club leadership involvement
-- Cumulative GPA / Academic score
-- Days registered prior to election
-- Departmental candidate presence
-
----
-
-## 🛠️ Tech Stack
-
-- **Frontend & App Framework**: [Streamlit](https://streamlit.io/)
-- **Backend & Database**: Python 3.11, SQLite3
-- **Machine Learning**: Scikit-Learn, Joblib, NumPy, Pandas
-- **Data Visualization**: Plotly Express & Plotly Graph Objects
-- **Code Assistance**: Built & refined using AI
-
----
-
-## 🏁 Quick Start Guide
-
-### 1. Clone the repository
+### 💻 Method B: Terminal Command
 ```bash
-git clone https://github.com/MeshramYug/CampusVote-Online-Voting-System.git
-cd CampusVote-Online-Voting-System
-```
-
-### 2. Install dependencies
-```bash
+# 1. Install dependencies
 pip install -r requirements.txt
-```
 
-### 3. Initialize Database & Seed Demo Data
-```bash
-python database.py
+# 2. Run the server
+python server.py
 ```
-
-### 4. (Optional) Retrain ML Models
-```bash
-python train_model.py
-```
-
-### 5. Launch the Web Application
-```bash
-streamlit run app.py
-```
-Open **[http://localhost:8501](http://localhost:8501)** in your browser!
+Open **[http://127.0.0.1:5000](http://127.0.0.1:5000)** in your browser!
 
 ---
 
-## 🔑 Demo Credentials (For Evaluation & Viva)
+## 📌 Implementation of SEPM Report Chapters & UI Wireframes
 
-Instant 1-click login buttons are available on the home screen, or enter credentials manually:
+This software implements all design models and UI screens specified in **`Online_Voting_System_SEPM_Report.docx`**:
 
-| Portal Tab | Username / Identifier | Password | Access Level |
+### 1. 🎓 Student Dashboard (**Figure 5.1**)
+- Metric cards showing Active Elections, Upcoming Elections, Ballots Cast, and Published Results.
+- Active Elections Table with target roles, closing times, and status badges (`Open`, `Scheduled`, `Closed`, `Published`).
+- Quick actions to cast ballots or view cryptographic voter certificates.
+
+### 2. 🗳️ Official Ballot Screen with Summary Panel (**Figure 5.2**)
+- Step-by-step post ballot selection (Council President, Sports Secretary, Cultural Secretary).
+- Candidate cards featuring emojis/symbols, candidate names, departments, years, and campaign manifestos.
+- **NOTA (None of the Above)** option as defined in Chapter 8.2 and Appendix A.
+- **Live Ballot Summary Panel**: Displays selections in real-time before confirmation.
+- Irreversible confirmation modal with secret ballot guarantees.
+
+### 3. 🛡️ Administrative Election Console (**Figure 5.3**)
+- High-priority metric cards: Total Registered Students, Total Ballots Cast, Active Polls, and Pending Nominations.
+- Polling Control Table: Transition election states in real-time: `Draft` ➔ `Scheduled` ➔ `Open` ➔ `Closed` ➔ `Published`.
+- Candidate Nomination Approval / Rejection review workflow.
+- Verified Student Voter Roll viewer.
+
+### 4. 🧑‍💼 Candidate Nomination Panel (Chapter 1.4 & 8.2)
+- Students can submit their nominations for open posts, choose election symbols, and upload their campaign manifesto.
+- Live tracking of nomination status: `Submitted` ➔ `Approved` / `Rejected`.
+
+### 5. 🏛️ Faculty Auditor Console & Decoupled Secrecy (Chapter 4.4 & 8.2)
+- Inspects database decoupling: `votes` table contains **zero link** to voter identity, mathematically guaranteeing secret ballots.
+- Full tamper-evident audit trail of system events, logins, and status shifts.
+
+### 6. 🧪 Automated SEPM Test Suite Runner (Chapter 9: TC-01 through TC-09)
+The application includes an interactive test suite that programmatically validates all 9 test cases from the report:
+- `TC-01`: Valid Student Authentication
+- `TC-02`: Invalid Password Defense
+- `TC-03`: Unregistered Voter Block
+- `TC-04`: Duplicate Voting Prevention (`UNIQUE(user_id, election_id)`)
+- `TC-05`: Voting Window Enforcement (Only `Open` polls accept votes)
+- `TC-06`: Role-Based Access Control
+- `TC-07`: Tally Consistency (Ballots = Voters)
+- `TC-08`: Secret Ballot Database Decoupling Verification
+- `TC-09`: Turnout & Audit Log Logging
+
+---
+
+## 🔑 Pre-Configured Demo Credentials (For Viva & Evaluation)
+
+For fast evaluation during practical examination, use the 1-click login buttons or enter credentials manually:
+
+| Portal | Identifier / Roll No | Password | Role Description |
 | :--- | :--- | :--- | :--- |
-| **🛡️ Admin Console** | `admin` | `admin123` | Full Commission Oversight |
-| **🎓 Student Portal** | `STU202601` | `pass123` | Final Year CSE Voter |
-| **🎓 Student Portal** | `STU202602` | `pass123` | Third Year IT Voter |
-| **🏛️ Faculty Portal** | `FAC101` | `pass123` | HOD & Senior Professor |
-| **🏛️ Faculty Portal** | `FAC102` | `pass123` | Associate Professor |
+| **🎓 Student Voter** | `24001027` | `pass123` | **Yug Meshram** (Artificial Intelligence, Sem V) |
+| **🎓 Student Voter** | `24001001` | `pass123` | Aarav Sharma (Computer Engineering, Final Year) |
+| **🛡️ Election Admin** | `admin` | `admin123` | **Dr. Vikas Bhowate** (Chief Election Officer) |
+| **🧑‍💼 Candidate** | `24001010` | `pass123` | Vikramaditya Roy (Presidential Candidate) |
+| **🏛️ Faculty Auditor**| `auditor` | `audit123` | Prof. H. R. Deshmukh (Audit & Compliance) |
 
 ---
 
 ## 📜 License
-
-Distributed under the **MIT License**. See `LICENSE` for details.
-
-Developed with ❤️ and 🤖 AI by **[Yug Meshram](https://github.com/MeshramYug)**.
+Distributed under the **MIT License**. Created by **Yug Meshram**.

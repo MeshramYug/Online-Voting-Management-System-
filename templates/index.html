@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Online Voting System for Students{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="p-5 mb-4 bg-white rounded-4 shadow-sm border border-light-subtle">
+    <div class="row align-items-center">
+        <div class="col-lg-8">
+            <span class="badge bg-primary text-white px-3 py-2 fw-bold text-uppercase mb-2">
+                SEPM Mini Project • Practical No. 9
+            </span>
+            <h1 class="display-6 fw-extrabold text-primary mb-2">Online Voting System for Students</h1>
+            <p class="lead text-muted mb-4">
+                A centralized, role-based e-voting platform designed for <strong>St. Vincent Pallotti College of Engineering & Technology, Nagpur</strong> to conduct student council and committee elections with 100% secret ballot guarantees, anti-duplicate voting enforcement, and digital certification.
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ url_for('login_portal') }}" class="btn btn-primary btn-lg px-4 fw-bold shadow-sm">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Access Login Portals
+                </a>
+                <a href="{{ url_for('published_results') }}" class="btn btn-outline-primary btn-lg px-4 fw-bold">
+                    <i class="bi bi-bar-chart-line me-1"></i> View Live Results
+                </a>
+                <a href="{{ url_for('test_suite') }}" class="btn btn-outline-success btn-lg px-4 fw-bold">
+                    <i class="bi bi-clipboard-check me-1"></i> Run SEPM Test Cases (TC-01..09)
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4 text-center mt-4 mt-lg-0">
+            <div class="p-4 bg-light rounded-4 border">
+                <div class="fs-1 mb-2">🗳️</div>
+                <h5 class="fw-bold mb-1">Academic Project Credits</h5>
+                <p class="small text-muted mb-2">Department of Artificial Intelligence</p>
+                <hr class="my-2">
+                <div class="text-start small">
+                    <strong>Student:</strong> Yug Meshram<br>
+                    <strong>College UID:</strong> <code>24001027</code><br>
+                    <strong>Subject:</strong> SEPM (Semester V)<br>
+                    <strong>Mentor / Guide:</strong> Dr. Vikas Bhowate<br>
+                    <strong>Database:</strong> SQLite (Local)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4 Dedicated Portals Cards -->
+<div class="row g-4 mb-5">
+    <div class="col-md-3 col-6">
+        <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-3 stat-card">
+            <div class="fs-1 text-primary mb-2">🎓</div>
+            <h5 class="fw-bold">Student Voter Portal</h5>
+            <p class="small text-muted flex-grow-1">Cast secret ballots, view candidate manifestos, and receive cryptographic participation receipts.</p>
+            <a href="{{ url_for('login_portal') }}" class="btn btn-outline-primary btn-sm fw-bold">Open Student Tab</a>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-3 stat-card">
+            <div class="fs-1 text-danger mb-2">🛡️</div>
+            <h5 class="fw-bold">Admin Console</h5>
+            <p class="small text-muted flex-grow-1">Schedule elections, approve nominations, open/close polling, and publish official results.</p>
+            <a href="{{ url_for('login_portal') }}" class="btn btn-outline-danger btn-sm fw-bold">Open Admin Tab</a>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-3 stat-card">
+            <div class="fs-1 text-success mb-2">🧑‍💼</div>
+            <h5 class="fw-bold">Candidate Panel</h5>
+            <p class="small text-muted flex-grow-1">Submit post nominations, upload manifestos, select election symbols, and view approvals.</p>
+            <a href="{{ url_for('login_portal') }}" class="btn btn-outline-success btn-sm fw-bold">Open Candidate Tab</a>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-3 stat-card">
+            <div class="fs-1 text-secondary mb-2">🏛️</div>
+            <h5 class="fw-bold">Auditor Panel</h5>
+            <p class="small text-muted flex-grow-1">Review tamper-evident audit logs and mathematically certify zero linkage between voter and vote.</p>
+            <a href="{{ url_for('login_portal') }}" class="btn btn-outline-secondary btn-sm fw-bold">Open Auditor Tab</a>
+        </div>
+    </div>
+</div>
+
+<!-- Architecture & Features Highlights -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card h-100">
+            <h5 class="fw-bold text-primary"><i class="bi bi-shield-check me-2"></i> 100% Secret Ballot</h5>
+            <p class="small text-muted mb-0">
+                Votes and Voter Participations are stored in separate, decoupled tables. Nobody can ever discover who you voted for (Chapter 4.4).
+            </p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card h-100">
+            <h5 class="fw-bold text-success"><i class="bi bi-arrow-repeat me-2"></i> Strict Anti-Duplicate</h5>
+            <p class="small text-muted mb-0">
+                Database-level unique constraint (`user_id` + `election_id`) ensures mathematically that every student votes exactly once per post.
+            </p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card h-100">
+            <h5 class="fw-bold text-warning-emphasis"><i class="bi bi-award me-2"></i> Verifiable Receipts</h5>
+            <p class="small text-muted mb-0">
+                Every voter receives an authentic cryptographic participation receipt token (`VOTE-REC-XXXXXXXX`) for attendance verification.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

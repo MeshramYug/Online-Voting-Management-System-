@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Faculty Auditor Console{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <h2 class="fw-bold text-secondary mb-1">Faculty Auditor & Compliance Console</h2>
+        <p class="text-muted mb-0">
+            Auditor: <strong>{{ user.name }}</strong> • Independent Election Integrity Committee • SVPCET
+        </p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2 fs-6">
+            <i class="bi bi-shield-lock"></i> Secrecy & Verification Authority
+        </span>
+    </div>
+</div>
+
+<!-- Mathematical Integrity Check Cards (TC-07 & TC-08) -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card border-start border-4 border-success">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-value text-success">100% Match</div>
+                    <div class="stat-label">TC-07 Ballot Count Consistency</div>
+                </div>
+                <div class="fs-1 text-success"><i class="bi bi-check-circle-fill"></i></div>
+            </div>
+            <small class="text-muted d-block mt-2">Total ballots match total voter participation records exactly.</small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card border-start border-4 border-primary">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-value text-primary">Decoupled</div>
+                    <div class="stat-label">TC-08 Secret Ballot Verification</div>
+                </div>
+                <div class="fs-1 text-primary"><i class="bi bi-lock-fill"></i></div>
+            </div>
+            <small class="text-muted d-block mt-2">Zero foreign keys connect voters to their ballot selections.</small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card border-start border-4 border-info">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-value text-info">{{ audit_logs|length }}</div>
+                    <div class="stat-label">Total System Audit Logs</div>
+                </div>
+                <div class="fs-1 text-info"><i class="bi bi-journal-code"></i></div>
+            </div>
+            <small class="text-muted d-block mt-2">Tamper-evident logs of logins, status shifts & submissions.</small>
+        </div>
+    </div>
+</div>
+
+<!-- Audit Log Table -->
+<div class="card border-0 shadow-sm rounded-3 mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-journal-text text-secondary me-2"></i> Tamper-Evident System Audit Trail (Chapter 8.2)</h5>
+        <span class="badge bg-light text-muted border">Immutable SQLite Storage</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive" style="max-height: 420px;">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small">
+                    <tr>
+                        <th class="ps-4">Log ID</th>
+                        <th>User / Role</th>
+                        <th>Action</th>
+                        <th>Event Details</th>
+                        <th>IP Address</th>
+                        <th class="text-end pe-4">Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in audit_logs %}
+                    <tr>
+                        <td class="ps-4"><code>#{{ log.id }}</code></td>
+                        <td>
+                            <span class="badge bg-light text-dark border">{{ log.username }}</span>
+                        </td>
+                        <td>
+                            {% if 'BALLOT' in log.action %}
+                                <span class="badge bg-success text-white">{{ log.action }}</span>
+                            {% elif 'LOGIN' in log.action %}
+                                <span class="badge bg-info text-dark">{{ log.action }}</span>
+                            {% elif 'STATUS' in log.action %}
+                                <span class="badge bg-warning text-dark">{{ log.action }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary text-white">{{ log.action }}</span>
+                            {% endif %}
+                        </td>
+                        <td><small class="text-dark">{{ log.details }}</small></td>
+                        <td><small class="text-muted font-monospace">{{ log.ip_address }}</small></td>
+                        <td class="text-end pe-4 small text-muted">{{ log.timestamp }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

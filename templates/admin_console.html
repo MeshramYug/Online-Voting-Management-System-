@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Election Console (Figure 5.3){% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <h2 class="fw-bold text-danger mb-1">Administrative Election Console</h2>
+        <p class="text-muted mb-0">
+            Supervisor: <strong>Dr Vikas Bhowate</strong> • Campus Election Commission • SVPCET Nagpur
+        </p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <button class="btn btn-primary btn-sm fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#createElectionModal">
+            <i class="bi bi-plus-circle-fill"></i> Create New Election
+        </button>
+    </div>
+</div>
+
+<!-- Figure 5.3: Top High-Priority Metric Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="stat-card border-start border-4 border-primary">
+            <div class="stat-value text-primary">{{ stats.total_students }}</div>
+            <div class="stat-label">Eligible Registered Voters</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card border-start border-4 border-success">
+            <div class="stat-value text-success">{{ stats.total_ballots_cast }}</div>
+            <div class="stat-label">Total Ballots Cast</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card border-start border-4 border-warning">
+            <div class="stat-value text-warning">{{ stats.active_polls }}</div>
+            <div class="stat-label">Active Polling Sessions</div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card border-start border-4 border-info">
+            <div class="stat-value text-info">{{ stats.pending_nominations }}</div>
+            <div class="stat-label">Pending Nominations</div>
+        </div>
+    </div>
+</div>
+
+<!-- Figure 5.3: Election Lifecycle & State Control Table -->
+<div class="card border-0 shadow-sm rounded-3 mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-toggles text-danger me-2"></i> Polling Control & State Transition Panel</h5>
+        <span class="badge bg-light text-muted border">State Flow: Draft ➔ Scheduled ➔ Open ➔ Closed ➔ Published</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Election Details</th>
+                        <th>Posts Configured</th>
+                        <th>Current State</th>
+                        <th>Ballots Cast</th>
+                        <th class="text-end pe-4">Polling Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for elec in elections %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold text-dark">{{ elec.title }}</div>
+                            <small class="text-muted">{{ elec.start_time }} to {{ elec.end_time }}</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border">{{ elec.post_count }} Posts</span>
+                        </td>
+                        <td>
+                            {% if elec.status == 'Open' %}
+                                <span class="badge-status status-open"><i class="bi bi-broadcast text-danger me-1"></i> Open (Polling Active)</span>
+                            {% elif elec.status == 'Scheduled' %}
+                                <span class="badge-status status-scheduled">Scheduled</span>
+                            {% elif elec.status == 'Closed' %}
+                                <span class="badge-status status-closed">Closed (Tallying)</span>
+                            {% elif elec.status == 'Published' %}
+                                <span class="badge-status status-published">Results Published</span>
+                            {% else %}
+                                <span class="badge-status status-scheduled">{{ elec.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong class="text-primary">{{ elec.votes_count }}</strong>
+                            {% if elec.status == 'Open' %}
+                                <small class="text-muted d-block" style="font-size: 0.72rem;">*Secrecy active: tally hidden until close</small>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group btn-group-sm" role="group">
+                                {% if elec.status == 'Scheduled' or elec.status == 'Draft' %}
+                                    <form action="{{ url_for('set_election_state', election_id=elec.id, state='Open') }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-success fw-bold">
+                                            <i class="bi bi-play-circle-fill"></i> Open Polling
+                                        </button>
+                                    </form>
+                                {% elif elec.status == 'Open' %}
+                                    <form action="{{ url_for('set_election_state', election_id=elec.id, state='Closed') }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-warning fw-bold">
+                                            <i class="bi bi-stop-circle-fill"></i> Close Polling
+                                        </button>
+                                    </form>
+                                {% elif elec.status == 'Closed' %}
+                                    <form action="{{ url_for('set_election_state', election_id=elec.id, state='Published') }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-primary fw-bold">
+                                            <i class="bi bi-send-check"></i> Publish Official Results
+                                        </button>
+                                    </form>
+                                {% elif elec.status == 'Published' %}
+                                    <a href="{{ url_for('published_results') }}" class="btn btn-outline-info">
+                                        <i class="bi bi-eye"></i> View Public Tally
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Figure 5.3: Candidate Nominations Review Panel -->
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-person-check text-primary me-2"></i> Candidate Nomination Approvals</h6>
+                <span class="badge bg-warning text-dark">{{ pending_cands|length }} Pending Approval</span>
+            </div>
+            <div class="card-body p-0">
+                {% if pending_cands %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small">
+                            <tr>
+                                <th class="ps-3">Candidate</th>
+                                <th>Post Applied</th>
+                                <th>Manifesto</th>
+                                <th class="text-end pe-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c in pending_cands %}
+                            <tr>
+                                <td class="ps-3">
+                                    <div class="fw-bold">{{ c.symbol_emoji }} {{ c.name }}</div>
+                                    <small class="text-muted">{{ c.department }} • {{ c.year }}</small>
+                                </td>
+                                <td><span class="badge bg-light text-dark border">{{ c.post_name }}</span></td>
+                                <td><small class="text-secondary fst-italic">"{{ c.manifesto }}"</small></td>
+                                <td class="text-end pe-3">
+                                    <div class="btn-group btn-group-sm">
+                                        <form action="{{ url_for('approve_nomination', candidate_id=c.id, decision='Approved') }}" method="POST" class="d-inline">
+                                            <button class="btn btn-success btn-sm"><i class="bi bi-check"></i> Approve</button>
+                                        </form>
+                                        <form action="{{ url_for('approve_nomination', candidate_id=c.id, decision='Rejected') }}" method="POST" class="d-inline ms-1">
+                                            <button class="btn btn-outline-danger btn-sm"><i class="bi bi-x"></i> Reject</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="p-4 text-center text-muted">
+                    <i class="bi bi-check2-circle fs-3 text-success"></i>
+                    <p class="mb-0 mt-2">All submitted nominations have been reviewed and approved.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Voter Roll Management -->
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-white py-3">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-card-list text-primary me-2"></i> Verified Voter Roll (Student Roll)</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive" style="max-height: 280px;">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead class="table-light small">
+                            <tr>
+                                <th class="ps-3">UID</th>
+                                <th>Student Name</th>
+                                <th>Department</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in student_roll %}
+                            <tr>
+                                <td class="ps-3"><code>{{ s.identifier }}</code></td>
+                                <td class="fw-semibold">{{ s.name }}</td>
+                                <td class="small text-muted">{{ s.department }}</td>
+                                <td><span class="badge bg-success-subtle text-success">Eligible</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-light py-2 text-center">
+                <small class="text-muted">Total verified campus voter roll: <strong>{{ student_roll|length }}</strong></small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Create New Election -->
+<div class="modal fade" id="createElectionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold">Create New Campus Election</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('create_election') }}" method="POST">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Election Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="e.g. ACM Student Chapter Elections 2026-27" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Description</label>
+                        <textarea name="description" class="form-control" rows="2" placeholder="Details regarding eligible voters and election rules..."></textarea>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Start Date & Time</label>
+                            <input type="datetime-local" name="start_time" class="form-control" required value="2026-11-01T09:00">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">End Date & Time</label>
+                            <input type="datetime-local" name="end_time" class="form-control" required value="2026-11-05T17:00">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Initial Status</label>
+                        <select name="status" class="form-select">
+                            <option value="Draft">Draft</option>
+                            <option value="Scheduled" selected>Scheduled</option>
+                            <option value="Open">Open (Immediate Polling)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary fw-bold px-4">Create Election</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
